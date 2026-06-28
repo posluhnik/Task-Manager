@@ -1,0 +1,76 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Main";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Task manager</h1>
+        
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Add new task</h5>
+                    <form method="post" asp-page-handler="Add">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" asp-for="NewTask.Title" class="form-control" placeholder="What do you need to do?" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea asp-for="NewTask.Description" class="form-control" rows="3" placeholder="Details..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Current tasks (@Model.Tasks.Count)</h5>
+
+                    @if (!Model.Tasks.Any())
+                    {
+                        <div class="alert alert-info text-center">There are no tasks for now.</div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Date of creation</th>
+                                        <th class="text-end">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var task in Model.Tasks)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold text-dark">@task.Title</td>
+                                            <td class="text-muted">@task.Description</td>
+                                            <td class="small text-secondary">@task.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                            <td class="text-end">
+                                                <form method="post" asp-page-handler="Delete" asp-route-id="@task.Id" style="display:inline;">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
