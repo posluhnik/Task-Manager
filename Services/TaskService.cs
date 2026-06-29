@@ -7,31 +7,35 @@ public class TaskService
 {
     private readonly string _filePath = Path.Combine(Directory.GetCurrentDirectory(), "tasks.json");
 
-    public List<TaskItem> GetAll()
+    private List<TaskItem> LoadAllFromFile()
     {
         if (!File.Exists(_filePath)) return new List<TaskItem>();
         var json = File.ReadAllText(_filePath);
         return JsonSerializer.Deserialize<List<TaskItem>>(json) ?? new List<TaskItem>();
     }
 
-    public void Save(List<TaskItem> tasks)
+    private void SaveAllToFile(List<TaskItem> tasks)
     {
         var json = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
-        File.ReadAllText(_filePath);
         File.WriteAllText(_filePath, json);
+    }
+
+    public List<TaskItem> GetByUserId(string userId)
+    {
+        return LoadAllFromFile().Where(t => t.UserId == userId).ToList();
     }
 
     public void Add(TaskItem task)
     {
-        var tasks = GetAll();
+        var tasks = LoadAllFromFile();
         tasks.Add(task);
-        Save(tasks);
+        SaveAllToFile(tasks);
     }
 
-    public void Delete(Guid id)
+    public void Delete(Guid id, string userId)
     {
-        var tasks = GetAll();
-        tasks.RemoveAll(t => t.Id == id);
-        Save(tasks);
+        var tasks = LoadAllFromFile();
+        tasks.RemoveAll(t => t.Id == id && t.UserId == userId);
+        SaveAllToFile(tasks);
     }
 }

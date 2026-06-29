@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddSingleton<MyFirstSite.Services.TaskService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -17,6 +21,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 
